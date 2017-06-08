@@ -14,9 +14,8 @@ typedef char* str;
 
 #define INT_CHAR_LENGTH(i) int_char_length(i)
 //#define TO_STRING(i, buf) char[INT_CHAR_LENGTH(i)] buf; tostring(i, buf, 10)
-#define TO_STRING(i, str) {\
+#define TO_STRING(i, str) char str[INT_CHAR_LENGTH(i)]; {\
     int a = INT_CHAR_LENGTH(i);\
-    char str[a];\
     tostring(i, str, 10);\
 }
 
