@@ -14,7 +14,6 @@ set(SOURCE_FILES
         test/vendor/unity.h
         test/vendor/unity_internals.h)
 
-#set(CMAKE_C_FLAGS "-lm")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 add_executable(tests test/structures.c ${SOURCE_FILES})
 add_library(structures ${SOURCE_FILES})
+target_link_libraries(tests m)

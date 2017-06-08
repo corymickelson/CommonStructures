@@ -6,6 +6,9 @@
 #define STRUCTURES_STR_H
 
 #include <stdlib.h>
+#include <math.h>
+#include <stdbool.h>
+#include <string.h>
 
 typedef char* str;
 

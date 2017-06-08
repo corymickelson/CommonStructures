@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #ifndef STRUCTURES_VECTOR_H
 #define STRUCTURES_VECTOR_H
@@ -28,7 +29,7 @@ typedef struct {
     int capacity;
     int size;
     void **items;
-    int freeze_growth;
+    bool lock_size;
 } vector;
 
 typedef struct {

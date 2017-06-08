@@ -2,14 +2,13 @@
 // Created by red on 6/7/17.
 //
 
-#include <sybdb.h>
 #include "vector.h"
 
 void vector_init(vector *vec) {
     vec->size = 0;
     vec->capacity = VECTOR_INIT_CAPACITY;
     vec->items = calloc(sizeof(void *), VECTOR_INIT_CAPACITY);
-    vec->freeze_growth = FALSE;
+    vec->lock_size = false;
 }
 
 vector_meta vector_size(vector *vec) {
@@ -43,21 +42,21 @@ static void vector_resize(vector *vec) {
     }
 }
 
-static BOOL vector_check(vector *vec, int index) {
+static bool vector_check(vector *vec, int index) {
     if (vec->capacity < index || index < 0) {
         printf("index out of bounds");
-        return FALSE;
+        return false;
     }
     if (index > vec->size) {
         printf("head of vector at: %d\nattempted to add item at %d\nUse the vector_add method",
                vec->size, index);
-        return FALSE;
+        return false;
     }
-    return TRUE;
+    return true;
 }
 
 void vector_add(vector *vec, void *item) {
-    if (vec->freeze_growth) {
+    if (vec->lock_size) {
         if (vec->size == vec->capacity) {
             printf("Can not add to vector\nVector growth frozen.Vector at capacity.");
             return;
@@ -100,7 +99,7 @@ void vector_expand(vector *vec, int capped) {
     void *items = realloc(vec->items, sizeof(void *) * capped);
     vec->items = items;
     vec->capacity = capped;
-    vec->freeze_growth = TRUE;
+    vec->lock_size = true;
 }
 
 void vector_contract(vector *vec) {
@@ -108,5 +107,5 @@ void vector_contract(vector *vec) {
     int resize_value = (int) sizing.occupied + ((10 / sizing.capacity) * 100);
     void *items = realloc(vec->items, sizeof(void *) * resize_value);
     vec->items = items;
-    vec->freeze_growth = TRUE;
+    vec->lock_size = true;
 }

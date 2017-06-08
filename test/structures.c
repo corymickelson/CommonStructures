@@ -64,7 +64,7 @@ void test_vector_add_int_macro(void) {
 void test_vector_get_set(void) {
     VECTOR_INIT(v);
     for (int i = 0; i < 10; i++) {
-        //TO_STRING(i, str);
+        TO_STRING(i, buf);
         VECTOR_ADD(v, "0");
     }
     VECTOR_SET(v, 1, "one");

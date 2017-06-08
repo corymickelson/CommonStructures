@@ -2,9 +2,6 @@
 // Created by red on 6/7/17.
 //
 
-#include <sybdb.h>
-#include <string.h>
-#include <math.h>
 #include "str.h"
 
 void inplace_reverse(char *str) {
@@ -30,14 +27,14 @@ void inplace_reverse(char *str) {
 
 void tostring(int num, char *str, int base) {
     int i = 0;
-    BOOL isNegative = FALSE;
+    bool isNegative = false;
     if (num == 0) {
         str[i++] = '0';
         str[i] = '\0';
         return;
     }
     if (num < 0 && base == 10) {
-        isNegative = TRUE;
+        isNegative = true;
         num = -num;
     }
     while (num != 0) {
@@ -51,7 +48,7 @@ void tostring(int num, char *str, int base) {
     inplace_reverse(str);
 }
 
-//int int_char_length(int i) {
-//    if(i == 0) return 1;
-//    else return (int) floor(log10(abs(i))) + 1;
-//}
+int int_char_length(int i) {
+    if(i == 0) return 1;
+    else return (int) floor(log10(abs(i))) + 1;
+}
