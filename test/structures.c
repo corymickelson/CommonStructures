@@ -4,6 +4,7 @@
 
 #include "vendor/unity.h"
 #include "../vector.h"
+#include "../str.h"
 
 
 void test_vector_init_macro(void) {
@@ -60,6 +61,26 @@ void test_vector_add_int_macro(void) {
     VECTOR_FREE(v);
 }
 
+void test_vector_get_set(void) {
+    VECTOR_INIT(v);
+    for (int i = 0; i < 10; i++) {
+        //TO_STRING(i, str);
+        VECTOR_ADD(v, "0");
+    }
+    VECTOR_SET(v, 1, "one");
+    VECTOR_SET(v, 2, "two");
+    VECTOR_SET(v, 8, "eight");
+
+    int tests[] = {1,2,8};
+    char *values[] ={"one", "two", "eight"};
+
+    for (int j = 0; j < 3; j++) {
+       char* actual = VECTOR_GET(v, char*, tests[j]);
+       TEST_ASSERT_EQUAL_STRING(values[j], actual);
+    }
+   VECTOR_FREE(v);
+}
+
 int main(void) {
     UnityBegin("test/structures.c");
     RUN_TEST(test_vector_init_macro);
@@ -67,6 +88,7 @@ int main(void) {
     RUN_TEST(test_vector_add_str_macro);
     RUN_TEST(test_vector_add_str);
     RUN_TEST(test_vector_add_int_macro);
+    RUN_TEST(test_vector_get_set);
     UnityEnd();
     return 0;
 }

@@ -44,7 +44,7 @@ static void vector_resize(vector *vec) {
 }
 
 static BOOL vector_check(vector *vec, int index) {
-    if (vec->capacity > index || index < 0) {
+    if (vec->capacity < index || index < 0) {
         printf("index out of bounds");
         return FALSE;
     }

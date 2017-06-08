@@ -8,9 +8,13 @@ set(SOURCE_FILES
         library.h
         vector.c
         vector.h
+        str.c
+        str.h
         test/vendor/unity.c
         test/vendor/unity.h
         test/vendor/unity_internals.h)
 
+#set(CMAKE_C_FLAGS "-lm")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 add_executable(tests test/structures.c ${SOURCE_FILES})
 add_library(structures ${SOURCE_FILES})
