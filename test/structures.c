@@ -81,6 +81,17 @@ void test_vector_get_set(void) {
    VECTOR_FREE(v);
 }
 
+void test_vector_delete(void) {
+    VECTOR_INIT(vec);
+    VECTOR_ADD(vec, "TEST");
+    VECTOR_ADD(vec, "TWO");
+    VECTOR_DELETE(vec, 1);
+    TEST_ASSERT_TRUE(vec.size == 1);
+    char* actual = VECTOR_GET(vec, char*, 0);
+    TEST_ASSERT_EQUAL_STRING("TEST", actual);
+    VECTOR_FREE(vec);
+}
+
 int main(void) {
     UnityBegin("test/structures.c");
     RUN_TEST(test_vector_init_macro);
@@ -89,6 +100,7 @@ int main(void) {
     RUN_TEST(test_vector_add_str);
     RUN_TEST(test_vector_add_int_macro);
     RUN_TEST(test_vector_get_set);
+    RUN_TEST(test_vector_delete);
     UnityEnd();
     return 0;
 }
