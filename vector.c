@@ -4,14 +4,14 @@
 
 #include "vector.h"
 
-void vector_init(vector *vec) {
+void _vector_init(vector *vec) {
     vec->size = 0;
     vec->capacity = VECTOR_INIT_CAPACITY;
     vec->items = calloc(sizeof(void *), VECTOR_INIT_CAPACITY);
     vec->lock_size = false;
 }
 
-vector_meta vector_size(vector *vec) {
+vector_meta _vector_stats(vector *vec) {
     vector_meta vec_size = {
             .capacity = vec->capacity,
             .percent_occupied = (int) (((double) vec->size / vec->capacity) * 100),
@@ -20,7 +20,7 @@ vector_meta vector_size(vector *vec) {
     return vec_size;
 }
 
-static void vector_resize(vector *vec) {
+static void _vector_realloc(vector *vec) {
     int current_percent = (int) (((double) vec->size / vec->capacity) * 100);
     int resize_value = NULL;
     if (current_percent >= VECTOR_UPPER_BOUNDS) resize_value = vec->capacity * VECTOR_RESIZE_FACTOR;
@@ -53,24 +53,24 @@ static bool vector_check(vector *vec, int index) {
     return true;
 }
 
-void vector_add(vector *vec, void *item) {
+void _vector_add(vector *vec, void *item) {
     if (vec->lock_size) {
         if (vec->size == vec->capacity) {
             printf("Can not add to vector\nVector growth frozen.Vector at capacity.");
             return;
         }
     }
-    else vector_resize(vec);
+    else _vector_realloc(vec);
 
     vec->items[vec->size++] = item;
 }
 
-void vector_set(vector *vec, int index, void *item) {
+void _vector_set(vector *vec, int index, void *item) {
     if (!vector_check(vec, index)) return;
     vec->items[index] = item;
 }
 
-void *vector_get(vector *vec, int index) {
+void *_vector_get(vector *vec, int index) {
     if (vec->size < index || index < 0) {
         printf("index out of bounds");
         return NULL;
@@ -78,8 +78,8 @@ void *vector_get(vector *vec, int index) {
     return vec->items[index];
 }
 
-void vector_delete(vector *vec, int index) {
-    vector_size(vec);
+void _vector_delete(vector *vec, int index) {
+    _vector_stats(vec);
     if (!vector_check(vec, index)) return;
     for (; index <= vec->size - 1; index++) {
         int next = index + 1;
@@ -89,11 +89,11 @@ void vector_delete(vector *vec, int index) {
     vec->size--;
 }
 
-void vector_free(vector *vec) {
+void _vector_free(vector *vec) {
     free(vec->items);
 }
 
-void vector_expand(vector *vec, int capped) {
+void _vector_expand(vector *vec, int capped) {
     if(vec->size > capped) {
         printf("Can not resize to length less than that currently occupied.");
         return;
@@ -104,10 +104,11 @@ void vector_expand(vector *vec, int capped) {
     vec->lock_size = true;
 }
 
-void vector_contract(vector *vec) {
+void _vector_contract(vector *vec) {
     int resize_value = (vec->capacity / 10) + vec->size;
     void *items = realloc(vec->items, sizeof(void *) * resize_value);
     vec->capacity = resize_value;
     vec->items = items;
     vec->lock_size = true;
 }
+
