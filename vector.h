@@ -17,13 +17,13 @@
 #define VECTOR_DELETE(vec, id) vector_delete(&vec, id)
 #define VECTOR_SIZE(vec) vector_meta meta; vector_size(&vec)
 #define VECTOR_FREE(vec) vector_free(&vec)
-#define VECTOR_EXPAND(vec) vector_expand(&vec)
+#define VECTOR_EXPAND(vec, size) vector_expand(&vec, size)
 #define VECTOR_CONTRACT(vec) vector_contract(&vec)
 
 #define VECTOR_INIT_CAPACITY 100
 #define VECTOR_RESIZE_FACTOR 2
-#define VECTOR_RESIZE_EXPAND_AT_PERCENT 0.7
-#define VECTOR_RESIZE_CONTRACT_AT_PERCENT 0.3
+#define VECTOR_LOWER_BOUNDS 30
+#define VECTOR_UPPER_BOUNDS 70
 
 typedef struct {
     int capacity;
@@ -34,8 +34,8 @@ typedef struct {
 
 typedef struct {
     int capacity;
-    double remaining;
-    double occupied;
+    double percent_remaining;
+    double percent_occupied;
 } vector_meta;
 
 void vector_init(vector *);

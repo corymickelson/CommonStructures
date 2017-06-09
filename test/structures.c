@@ -7,6 +7,8 @@
 #include "../str.h"
 
 
+void fill_x_vector_helper(vector *vec, int);
+
 void test_vector_init_macro(void) {
     VECTOR_INIT(v);
     TEST_ASSERT_EQUAL_INT(v.capacity, 100);
@@ -92,6 +94,36 @@ void test_vector_delete(void) {
     VECTOR_FREE(vec);
 }
 
+void test_vector_contract(void) {
+    VECTOR_INIT(vec);
+    fill_x_vector_helper(&vec, 70);
+    VECTOR_ADD(vec, "should force resize");
+    TEST_ASSERT_EQUAL_INT(200, vec.capacity);
+    int resize_value = (vec.capacity / 10) + vec.size;
+    VECTOR_CONTRACT(vec);
+    TEST_ASSERT_EQUAL_INT(resize_value, vec.capacity);
+    TEST_ASSERT_EQUAL_INT(vec.lock_size, true);
+    VECTOR_FREE(vec);
+}
+
+void test_vector_expand(void) {
+    VECTOR_INIT(vec);
+    fill_x_vector_helper(&vec, 50);
+    int expected = 111;
+    VECTOR_EXPAND(vec, expected);
+    TEST_ASSERT_EQUAL_INT(vec.lock_size, true);
+    TEST_ASSERT_EQUAL_INT(vec.capacity, expected);
+    VECTOR_FREE(vec);
+}
+
+void fill_x_vector_helper(vector *vec, int x) {
+    for (int i = 0; i < x; ++i) {
+        TO_STRING(i, str);
+        VECTOR_ADD(*vec, str);
+    }
+}
+
+
 int main(void) {
     UnityBegin("test/structures.c");
     RUN_TEST(test_vector_init_macro);
@@ -101,6 +133,8 @@ int main(void) {
     RUN_TEST(test_vector_add_int_macro);
     RUN_TEST(test_vector_get_set);
     RUN_TEST(test_vector_delete);
+    RUN_TEST(test_vector_contract);
+    RUN_TEST(test_vector_expand);
     UnityEnd();
     return 0;
 }

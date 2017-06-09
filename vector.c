@@ -14,19 +14,17 @@ void vector_init(vector *vec) {
 vector_meta vector_size(vector *vec) {
     vector_meta vec_size = {
             .capacity = vec->capacity,
-            .occupied = (vec->size / vec->capacity) * 100,
-            .remaining = ((vec->capacity - vec->size) / vec->capacity) * 100
+            .percent_occupied = (int) (((double) vec->size / vec->capacity) * 100),
+            .percent_remaining = (int) (((double) (vec->capacity - vec->size) / vec->capacity) * 100)
     };
     return vec_size;
 }
 
 static void vector_resize(vector *vec) {
-    int lower_bounds = (int) (vec->capacity * VECTOR_RESIZE_CONTRACT_AT_PERCENT);
-    int upper_bounds = (int) (vec->capacity * VECTOR_RESIZE_EXPAND_AT_PERCENT);
-    int current_percent = vec->size / vec->capacity * 100;
+    int current_percent = (int) (((double) vec->size / vec->capacity) * 100);
     int resize_value = NULL;
-    if (current_percent >= upper_bounds) resize_value = vec->capacity * VECTOR_RESIZE_FACTOR;
-    else if (current_percent <= lower_bounds &&
+    if (current_percent >= VECTOR_UPPER_BOUNDS) resize_value = vec->capacity * VECTOR_RESIZE_FACTOR;
+    else if (current_percent <= VECTOR_LOWER_BOUNDS&&
              vec->capacity > VECTOR_INIT_CAPACITY)
         resize_value = (vec->capacity / VECTOR_RESIZE_FACTOR) * 2;
     else return;
@@ -96,6 +94,10 @@ void vector_free(vector *vec) {
 }
 
 void vector_expand(vector *vec, int capped) {
+    if(vec->size > capped) {
+        printf("Can not resize to length less than that currently occupied.");
+        return;
+    }
     void *items = realloc(vec->items, sizeof(void *) * capped);
     vec->items = items;
     vec->capacity = capped;
@@ -103,9 +105,9 @@ void vector_expand(vector *vec, int capped) {
 }
 
 void vector_contract(vector *vec) {
-    vector_meta sizing = vector_size(vec);
-    int resize_value = (int) sizing.occupied + ((10 / sizing.capacity) * 100);
+    int resize_value = (vec->capacity / 10) + vec->size;
     void *items = realloc(vec->items, sizeof(void *) * resize_value);
+    vec->capacity = resize_value;
     vec->items = items;
     vec->lock_size = true;
 }
