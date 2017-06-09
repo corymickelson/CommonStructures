@@ -127,7 +127,11 @@ int*  test_times_two(int* item) {
     return (int *) ((int)item * 2);
 }
 
-void test_vector_foreach(void) {
+int* test_div_two(int* item) {
+    return (int*) ((int)item / 2);
+}
+
+void test_vector_map(void) {
     vector_init(vec);
     int i =0;
     int initial_values[] = {1, 2, 3, 4};
@@ -136,16 +140,29 @@ void test_vector_foreach(void) {
         vector_add(vec, initial_values[i]);
     }
 
-    vector_foreach(vec, int*, &test_times_two);
+    vector_map(vec, int*, &test_times_two, map_vec);
 
     TEST_ASSERT_EQUAL_INT(4, vec.size);
     TEST_ASSERT_EQUAL_INT(false, vec.lock_size);
 
+    TEST_ASSERT_EQUAL_INT(4, map_vec.size);
+    TEST_ASSERT_EQUAL_INT(false, map_vec.lock_size);
+
     for (i = 0; i < 4; ++i) {
-        int* actual = vector_get(vec,int*, i);
+        //int* actual = (int*) (map[i]);
+        int* actual = vector_get(map_vec, int*, i);
+        TEST_ASSERT_EQUAL_INT(expected_values[i], actual);
+    }
+
+    vector_map_self(vec, int*, &test_times_two);
+    TEST_ASSERT_EQUAL_INT(4, vec.size);
+    TEST_ASSERT_EQUAL_INT(false, vec.lock_size);
+    for(i =0; i<4; i++) {
+        int* actual = vector_get(vec, int*, i);
         TEST_ASSERT_EQUAL_INT(expected_values[i], actual);
     }
     vector_free(vec);
+    vector_free(map_vec);
 }
 
 
@@ -162,7 +179,7 @@ int main(void) {
     RUN_TEST(test_vector_delete);
     RUN_TEST(test_vector_contract);
     RUN_TEST(test_vector_expand);
-    RUN_TEST(test_vector_foreach);
+    RUN_TEST(test_vector_map);
     UnityEnd();
     return 0;
 }
