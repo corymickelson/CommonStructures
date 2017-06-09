@@ -181,6 +181,20 @@ void test_vector_reduce_int(void) {
     vector_free(vec);
 }
 
+char* cat_reducer(char* dest, char* item) {
+    strcat(dest, item);
+    return dest;
+}
+
+void test_vector_reduce_str(void) {
+    int i =0;
+    vector_init(vec);
+    vector_helper_fill_to(&vec, 10);
+    char* expected = "0123456789";
+    vector_reduce(vec, char*, accum, &cat_reducer)
+    TEST_ASSERT_EQUAL_STRING(expected, accum);
+    vector_free(vec);
+}
 
 int main(void) {
     UnityBegin("test/structures.c");
@@ -195,6 +209,7 @@ int main(void) {
     RUN_TEST(test_vector_expand);
     RUN_TEST(test_vector_map);
     RUN_TEST(test_vector_reduce_int);
+    RUN_TEST(test_vector_reduce_str);
     UnityEnd();
     return 0;
 }

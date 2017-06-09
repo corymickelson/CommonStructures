@@ -46,8 +46,7 @@
  * @property {vector} vec - vector
  * @property t - pointer type
  * @property accum - accumulator, results object
- * @property {Function} fn - function pointer, fn must take two arguments, and return same type
- *      as arguments.
+ * @property {Function} fn - function pointer, fn of t returns t
  * @returns {pointer} accum
  */
 #define vector_reduce(vec, t, accum, fn) t accum=0;{\
