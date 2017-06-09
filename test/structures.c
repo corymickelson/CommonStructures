@@ -66,7 +66,7 @@ void test_vector_add_int_macro(void) {
 void test_vector_get_set(void) {
     vector_init(v);
     for (int i = 0; i < 10; i++) {
-        TO_STRING(i, buf);
+        to_string(i, buf);
         vector_add(v, buf);
     }
     vector_set(v, 1, "one");
@@ -118,7 +118,7 @@ void test_vector_expand(void) {
 
 void vector_helper_fill_to(vector *vec, int x) {
     for (int i = 0; i < x; ++i) {
-        TO_STRING(i, str);
+        to_string(i, str);
         vector_add(*vec, str);
     }
 }
@@ -165,7 +165,21 @@ void test_vector_map(void) {
     vector_free(map_vec);
 }
 
+int add_reducer(int accum, int item) {
+    int sum = accum + item;
+    return sum;
+}
 
+void test_vector_reduce_int(void) {
+    int i = 0;
+    vector_init(vec);
+    for(;i<10;i++) {
+       vector_add(vec, i);
+    }
+    vector_reduce(vec, int, accum, &add_reducer);
+    TEST_ASSERT_EQUAL_INT(45,(int) accum);
+    vector_free(vec);
+}
 
 
 int main(void) {
@@ -180,6 +194,7 @@ int main(void) {
     RUN_TEST(test_vector_contract);
     RUN_TEST(test_vector_expand);
     RUN_TEST(test_vector_map);
+    RUN_TEST(test_vector_reduce_int);
     UnityEnd();
     return 0;
 }

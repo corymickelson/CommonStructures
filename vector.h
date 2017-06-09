@@ -22,7 +22,7 @@
 #define vector_map(self, t, fn, vec) vector vec;  {\
     _vector_init(&vec);\
     t (*fn_ptr)(t);\
-    fn_ptr=fn;\
+    fn_ptr = fn;\
     for(int i = 0; i < self.size; i++) {\
         t item = vector_get(self, t, i);\
         t result = (*fn_ptr)((t) item);\
@@ -34,7 +34,7 @@
 
 #define vector_map_self(vec, t, fn) {\
    t (*fn_ptr)(t);\
-    fn_ptr=fn;\
+    fn_ptr = fn;\
     for(int i = 0; i < vec.size; i++) {\
         t item = vector_get(vec, t, i);\
         t result = (*fn_ptr)((t) item);\
@@ -42,10 +42,22 @@
     }\
 }
 
-#define vector_sort(vec, t) {\
-    \
+/**
+ * @property {vector} vec - vector
+ * @property t - pointer type
+ * @property accum - accumulator, results object
+ * @property {Function} fn - function pointer, fn must take two arguments, and return same type
+ *      as arguments.
+ * @returns {pointer} accum
+ */
+#define vector_reduce(vec, t, accum, fn) t accum=0;{\
+    t (*fn_ptr)(t, t);\
+    fn_ptr = fn;\
+    for(int i = 0; i < vec.size; i++) { \
+        t result = (*fn_ptr)((t)accum, (t)vec.items[i]);\
+        accum = result;\
+    }\
 }
-#define vector_reduce(vec, t, fn) {}
 
 #define VECTOR_INIT_CAPACITY 100
 #define VECTOR_RESIZE_FACTOR 2
