@@ -5,6 +5,7 @@
 #include "vendor/unity.h"
 #include "../vector.h"
 #include "../str.h"
+#include "../linked_list.h"
 
 
 void vector_helper_fill_to(vector *vec, int);
@@ -196,8 +197,29 @@ void test_vector_reduce_str(void) {
     vector_free(vec);
 }
 
+void test_linked_list_init(void) {
+    llist_init(list);
+    TEST_ASSERT_NOT_NULL(list.head);
+    TEST_ASSERT_EQUAL_INT(0, list.size);
+    llist_free(list);
+}
+
+void test_linked_list_lifecycle(void) {
+    llist_init(list);
+    llist_push(list, 3);
+    llist_push(list, 2);
+    llist_push(list, 1);
+    int last = llist_pop(list, int);
+    TEST_ASSERT_EQUAL_INT(1, last);
+    TEST_ASSERT_EQUAL_INT(2, list.size);
+    int first = llist_unshift(list, int);
+    TEST_ASSERT_EQUAL_INT(3, first);
+    llist_free(list);
+}
+
 int main(void) {
     UnityBegin("test/structures.c");
+    // !!!!!!!!!!! VECTOR TESTS !!!!!!!!!!
     RUN_TEST(test_vector_init_macro);
     RUN_TEST(test_vector_init);
     RUN_TEST(test_vector_add_str_macro);
@@ -209,7 +231,11 @@ int main(void) {
     RUN_TEST(test_vector_expand);
     RUN_TEST(test_vector_map);
     RUN_TEST(test_vector_reduce_int);
-    RUN_TEST(test_vector_reduce_str);
+
+    // !!!!!!!! LIST TESTS !!!!!!!!!
+    RUN_TEST(test_linked_list_init);
+    RUN_TEST(test_linked_list_lifecycle);
+
     UnityEnd();
     return 0;
 }
