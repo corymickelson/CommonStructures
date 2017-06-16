@@ -10,8 +10,6 @@ set(SOURCE_FILES
         vector.h
         str.c
         str.h
-        list.c
-        list.h
         linked_list.c
         linked_list.h
         dict.c

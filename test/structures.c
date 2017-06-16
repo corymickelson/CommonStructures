@@ -5,7 +5,6 @@
 #include "vendor/unity.h"
 #include "../vector.h"
 #include "../str.h"
-#include "../list.h"
 #include "../linked_list.h"
 
 
@@ -183,15 +182,64 @@ void test_vector_reduce_int(void) {
     vector_free(vec);
 }
 
-void test_list_init(void) {
-    list_init(list);
-    list_append(list, 0);
-    list_append(list, 1);
-    list_free(list);
+
+void test_linked_list_init(void) {
+    llist_init(list);
+    TEST_ASSERT_NULL(list.head->data);
+    TEST_ASSERT_EQUAL_INT(0, list.size);
+    llist_free(list);
 }
 
+void test_linked_list_lifecycle_happy_path(void) {
+    llist_init(list);
+    llist_push(list, 3);
+    llist_push(list, 2);
+    llist_push(list, 1);
+    TEST_ASSERT_EQUAL_INT(3, list.size);
+    TEST_ASSERT_NULL(list.tail->next);
+    int pop_one = llist_pop(list, int);
+    TEST_ASSERT_EQUAL_INT(1, pop_one);
+    TEST_ASSERT_EQUAL_INT(2, list.size);
+    int pop_three = llist_unshift(list, int);
+    TEST_ASSERT_EQUAL_INT(3, pop_three);
+    llist_free(list);
+}
+
+void test_linked_list_index_of(void) {
+    llist_init(list);
+    for (int i = 0; i < 10; i++) {
+        llist_push(list, i);
+    }
+    TEST_ASSERT_EQUAL_INT(10, list.size);
+    llist_index_of(list, int, 4, idx);
+    TEST_ASSERT_EQUAL_INT(4, idx);
+    llist_free(list);
+}
+
+void test_linked_list_index_of_all(void) {
+     llist_init(list);
+    for (int i = 0; i < 10; i++) {
+        llist_push(list, i <= 3 ? 3 : i);
+    }
+    TEST_ASSERT_EQUAL_INT(10, list.size);
+    int *idx = calloc((size_t) list.size, sizeof(int));
+    llist_index_of_all(list, int, 3, idx);
+    int count = 0;
+    if(idx[count] == 0) {
+        if((int) list.head->data == 3) {
+            while(idx[++count] > 0) {
+                continue;
+            }
+        }
+    }
+    TEST_ASSERT_EQUAL_INT(4, count);
+    llist_free(list);
+}
 void test_list(void) {
-    RUN_TEST(test_list_init);
+    RUN_TEST(test_linked_list_init);
+    RUN_TEST(test_linked_list_lifecycle_happy_path);
+    RUN_TEST(test_linked_list_index_of);
+    RUN_TEST(test_linked_list_index_of_all);
 }
 
 void test_dict(void) {

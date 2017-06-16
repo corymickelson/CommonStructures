@@ -14,7 +14,7 @@ void _llist_init(linked_list *list) {
 }
 
 void _llist_free(linked_list *list) {
-    struct list_node *curr = list->head->next;
+    struct list_node *curr = list->head;
     while (curr != NULL) {
         struct list_node *tmp = curr->next;
         free(curr);
@@ -111,3 +111,18 @@ void* _llist_unshift(linked_list *list) {
     list->size--;
     return item->data;
 }
+
+void* _llist_get(linked_list* list, int idx) {
+    if(list->size < idx) {
+        printf("out of bounds");
+        return NULL;
+    }
+    int count = 0;
+    struct list_node* item = list->head;
+    while(count < idx) {
+        item = item->next;
+        count++;
+    }
+    return item->data;
+}
+
