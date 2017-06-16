@@ -6,6 +6,7 @@
 #include "../vector.h"
 #include "../str.h"
 #include "../list.h"
+#include "../linked_list.h"
 
 
 void vector_helper_fill_to(vector *vec, int);

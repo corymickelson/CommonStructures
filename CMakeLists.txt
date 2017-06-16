@@ -12,6 +12,8 @@ set(SOURCE_FILES
         str.h
         list.c
         list.h
+        linked_list.c
+        linked_list.h
         dict.c
         dict.h
         test/vendor/unity.c
