@@ -5,6 +5,7 @@
 #include "vendor/unity.h"
 #include "../vector.h"
 #include "../str.h"
+#include "../list.h"
 
 
 void vector_helper_fill_to(vector *vec, int);
@@ -73,12 +74,12 @@ void test_vector_get_set(void) {
     vector_set(v, 2, "two");
     vector_set(v, 8, "eight");
 
-    int tests[] = {1,2,8};
-    char *values[] ={"one", "two", "eight"};
+    int tests[] = {1, 2, 8};
+    char *values[] = {"one", "two", "eight"};
 
     for (int j = 0; j < 3; j++) {
-       char* actual = vector_get(v, char*, tests[j]);
-       TEST_ASSERT_EQUAL_STRING(values[j], actual);
+        char *actual = vector_get(v, char*, tests[j]);
+        TEST_ASSERT_EQUAL_STRING(values[j], actual);
     }
     vector_free(v);
 }
@@ -89,7 +90,7 @@ void test_vector_delete(void) {
     vector_add(vec, "TWO");
     vector_delete(vec, 1);
     TEST_ASSERT_TRUE(vec.size == 1);
-    char* actual = vector_get(vec, char*, 0);
+    char *actual = vector_get(vec, char*, 0);
     TEST_ASSERT_EQUAL_STRING("TEST", actual);
     vector_free(vec);
 }
@@ -123,17 +124,17 @@ void vector_helper_fill_to(vector *vec, int x) {
     }
 }
 
-int*  test_times_two(int* item) {
-    return (int *) ((int)item * 2);
+int *test_times_two(int *item) {
+    return (int *) ((int) item * 2);
 }
 
-int* test_div_two(int* item) {
-    return (int*) ((int)item / 2);
+int *test_div_two(int *item) {
+    return (int *) ((int) item / 2);
 }
 
 void test_vector_map(void) {
     vector_init(vec);
-    int i =0;
+    int i = 0;
     int initial_values[] = {1, 2, 3, 4};
     int expected_values[] = {2, 4, 6, 8};
     for (; i < 4; i++) {
@@ -150,15 +151,15 @@ void test_vector_map(void) {
 
     for (i = 0; i < 4; ++i) {
         //int* actual = (int*) (map[i]);
-        int* actual = vector_get(map_vec, int*, i);
+        int *actual = vector_get(map_vec, int*, i);
         TEST_ASSERT_EQUAL_INT(expected_values[i], actual);
     }
 
     vector_map_self(vec, int*, &test_times_two);
     TEST_ASSERT_EQUAL_INT(4, vec.size);
     TEST_ASSERT_EQUAL_INT(false, vec.lock_size);
-    for(i =0; i<4; i++) {
-        int* actual = vector_get(vec, int*, i);
+    for (i = 0; i < 4; i++) {
+        int *actual = vector_get(vec, int*, i);
         TEST_ASSERT_EQUAL_INT(expected_values[i], actual);
     }
     vector_free(vec);
@@ -173,31 +174,30 @@ int add_reducer(int accum, int item) {
 void test_vector_reduce_int(void) {
     int i = 0;
     vector_init(vec);
-    for(;i<10;i++) {
-       vector_add(vec, i);
+    for (; i < 10; i++) {
+        vector_add(vec, i);
     }
-    vector_reduce(vec, int, accum, &add_reducer);
-    TEST_ASSERT_EQUAL_INT(45,(int) accum);
+    vector_reduce_int(vec, accum, &add_reducer);
+    TEST_ASSERT_EQUAL_INT(45, (int) accum);
     vector_free(vec);
 }
 
-char* cat_reducer(char* dest, char* item) {
-    strcat(dest, item);
-    return dest;
+void test_list_init(void) {
+    list_init(list);
+    list_append(list, 0);
+    list_append(list, 1);
+    list_free(list);
 }
 
-void test_vector_reduce_str(void) {
-    int i =0;
-    vector_init(vec);
-    vector_helper_fill_to(&vec, 10);
-    char* expected = "0123456789";
-    vector_reduce(vec, char*, accum, &cat_reducer)
-    TEST_ASSERT_EQUAL_STRING(expected, accum);
-    vector_free(vec);
+void test_list(void) {
+    RUN_TEST(test_list_init);
 }
 
-int main(void) {
-    UnityBegin("test/structures.c");
+void test_dict(void) {
+
+}
+
+void test_vector(void) {
     RUN_TEST(test_vector_init_macro);
     RUN_TEST(test_vector_init);
     RUN_TEST(test_vector_add_str_macro);
@@ -209,7 +209,13 @@ int main(void) {
     RUN_TEST(test_vector_expand);
     RUN_TEST(test_vector_map);
     RUN_TEST(test_vector_reduce_int);
-    RUN_TEST(test_vector_reduce_str);
+}
+
+int main(void) {
+    UnityBegin("test/structures.c");
+    test_vector();
+    test_list();
+    test_dict();
     UnityEnd();
     return 0;
 }

@@ -10,9 +10,14 @@ set(SOURCE_FILES
         vector.h
         str.c
         str.h
+        list.c
+        list.h
+        dict.c
+        dict.h
         test/vendor/unity.c
         test/vendor/unity.h
-        test/vendor/unity_internals.h)
+        test/vendor/unity_internals.h
+)
 
 add_executable(tests test/structures.c ${SOURCE_FILES})
 add_library(structures ${SOURCE_FILES})

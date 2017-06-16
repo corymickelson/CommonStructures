@@ -42,20 +42,17 @@
     }\
 }
 
-/**
- * @property {vector} vec - vector
- * @property t - pointer type
- * @property accum - accumulator, results object
- * @property {Function} fn - function pointer, fn of t returns t
- * @returns {pointer} accum
- */
-#define vector_reduce(vec, t, accum, fn) t accum=0;{\
-    t (*fn_ptr)(t, t);\
+#define vector_reduce_int(vec, accum, fn) int accum=0;{\
+    int (*fn_ptr)(int, int);\
     fn_ptr = fn;\
     for(int i = 0; i < vec.size; i++) { \
-        t result = (*fn_ptr)((t)accum, (t)vec.items[i]);\
+        int result = (*fn_ptr)((int)accum, (int)vec.items[i]);\
         accum = result;\
     }\
+}
+
+#define vector_reduce_str(vec, accum, fn) {\
+    \
 }
 
 #define VECTOR_INIT_CAPACITY 100
