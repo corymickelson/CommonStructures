@@ -182,6 +182,45 @@ void test_vector_reduce_int(void) {
     vector_free(vec);
 }
 
+int vector_index_of_strings_compare(char *target, char *candidate) {
+    int match = strcmp(target, candidate);
+    return match == 0 ? 1 : -1;
+}
+
+int vector_index_of_int_compare(int target, int candidate) {
+    return target == candidate;
+}
+
+void test_vector_index_of(void) {
+    int i = 0;
+    vector_init(vec);
+    for (; i < 10; i++) {
+        vector_add(vec, i);
+    }
+    vector_index_of(vec, 3, idx, vector_index_of_int_compare, int);
+    TEST_ASSERT_EQUAL_INT(idx, 3);
+}
+
+void test_vector_index_of_strs(void) {
+    int i = 0;
+    vector_init(vec);
+    vector_add(vec, "zero");
+    vector_add(vec, "one");
+    vector_add(vec, "two");
+    vector_add(vec, "three");
+    vector_index_of(vec, "three", idx, vector_index_of_strings_compare, char*);
+    TEST_ASSERT_EQUAL_INT(idx, 3);
+}
+
+void test_vector_index_of_not_found(void) {
+    int i = 0;
+    vector_init(vec);
+    for (; i < 10; i++) {
+        vector_add(vec, i);
+    }
+    vector_index_of(vec, 11, idx, vector_index_of_int_compare, int);
+    TEST_ASSERT_EQUAL_INT(idx, -1);
+}
 
 void test_linked_list_init(void) {
     llist_init(list);
@@ -217,7 +256,7 @@ void test_linked_list_index_of(void) {
 }
 
 void test_linked_list_index_of_all(void) {
-     llist_init(list);
+    llist_init(list);
     for (int i = 0; i < 10; i++) {
         llist_push(list, i <= 3 ? 3 : i);
     }
@@ -225,9 +264,9 @@ void test_linked_list_index_of_all(void) {
     int *idx = calloc((size_t) list.size, sizeof(int));
     llist_index_of_all(list, int, 3, idx);
     int count = 0;
-    if(idx[count] == 0) {
-        if((int) list.head->data == 3) {
-            while(idx[++count] > 0) {
+    if (idx[count] == 0) {
+        if ((int) list.head->data == 3) {
+            while (idx[++count] > 0) {
                 continue;
             }
         }
@@ -235,6 +274,7 @@ void test_linked_list_index_of_all(void) {
     TEST_ASSERT_EQUAL_INT(4, count);
     llist_free(list);
 }
+
 void test_list(void) {
     RUN_TEST(test_linked_list_init);
     RUN_TEST(test_linked_list_lifecycle_happy_path);
@@ -258,6 +298,9 @@ void test_vector(void) {
     RUN_TEST(test_vector_expand);
     RUN_TEST(test_vector_map);
     RUN_TEST(test_vector_reduce_int);
+    RUN_TEST(test_vector_index_of);
+    RUN_TEST(test_vector_index_of_strs);
+    RUN_TEST(test_vector_index_of_not_found);
 }
 
 int main(void) {

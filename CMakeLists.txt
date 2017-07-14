@@ -20,5 +20,5 @@ set(SOURCE_FILES
 )
 
 add_executable(tests test/structures.c ${SOURCE_FILES})
-add_library(structures ${SOURCE_FILES})
+add_library(structures ${SOURCE_FILES} try_catch.h)
 target_link_libraries(tests m)

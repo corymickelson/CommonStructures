@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "try_catch.h"
 
 #ifndef STRUCTURES_VECTOR_H
 #define STRUCTURES_VECTOR_H
@@ -19,6 +20,18 @@
 #define vector_free(vec) _vector_free(&vec)
 #define vector_expand(vec, size) _vector_expand(&vec, size)
 #define vector_contract(vec) _vector_contract(&vec)
+#define vector_compare_ints(a, b) a == b
+#define vector_compare_strings(a, b) strcmp(&a,&b) == 0 ? 1 : -1
+#define vector_index_of(self, target, index, cmp_fn, t) int index= -1; {\
+    int (*fn_ptr)(t, t);\
+    fn_ptr = cmp_fn;\
+    for(int i = 0; i < self.size; i++) {\
+        t candidate = vector_get(self, t, i);\
+        int cmp = (*fn_ptr)(target, candidate);\
+        if(cmp > 0) index = i;\
+    }\
+}
+
 #define vector_map(self, t, fn, vec) vector vec;  {\
     _vector_init(&vec);\
     t (*fn_ptr)(t);\
@@ -92,5 +105,6 @@ void _vector_free(vector *);
 void _vector_contract(vector *);
 
 void _vector_expand(vector *, int);
+
 
 #endif //STRUCTURES_VECTOR_H

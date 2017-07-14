@@ -24,7 +24,7 @@ static void _vector_realloc(vector *vec) {
     int current_percent = (int) (((double) vec->size / vec->capacity) * 100);
     int resize_value = NULL;
     if (current_percent >= VECTOR_UPPER_BOUNDS) resize_value = vec->capacity * VECTOR_RESIZE_FACTOR;
-    else if (current_percent <= VECTOR_LOWER_BOUNDS&&
+    else if (current_percent <= VECTOR_LOWER_BOUNDS &&
              vec->capacity > VECTOR_INIT_CAPACITY)
         resize_value = (vec->capacity / VECTOR_RESIZE_FACTOR) * 2;
     else return;
@@ -59,8 +59,7 @@ void _vector_add(vector *vec, void *item) {
             printf("Can not add to vector\nVector growth frozen.Vector at capacity.");
             return;
         }
-    }
-    else _vector_realloc(vec);
+    } else _vector_realloc(vec);
 
     vec->items[vec->size++] = item;
 }
@@ -94,7 +93,7 @@ void _vector_free(vector *vec) {
 }
 
 void _vector_expand(vector *vec, int capped) {
-    if(vec->size > capped) {
+    if (vec->size > capped) {
         printf("Can not resize to length less than that currently occupied.");
         return;
     }
