@@ -6,6 +6,7 @@
 #include "../vector.h"
 #include "../str.h"
 #include "../linked_list.h"
+#include "../dict.h"
 
 
 void vector_helper_fill_to(vector *vec, int);
@@ -275,6 +276,23 @@ void test_linked_list_index_of_all(void) {
     llist_free(list);
 }
 
+void test_dict_init(void) {
+    dict_init(dict);
+    TEST_ASSERT_EQUAL_INT(dict.keys.size, 0);
+    dict_free(dict);
+}
+
+void test_dict_get_set(void) {
+    dict_init(dict);
+    struct dict_entry item = {.key="ONE", .value=(void *) 1};
+    dict_set(dict, item);
+    TEST_ASSERT_EQUAL_INT(dict.keys.size, 1);
+    TEST_ASSERT_EQUAL_INT(dict.values.size, 1);
+    int test = dict_get(dict, int, "ONE");
+    TEST_ASSERT_EQUAL_INT(1, test);
+    dict_free(dict);
+}
+
 void test_list(void) {
     RUN_TEST(test_linked_list_init);
     RUN_TEST(test_linked_list_lifecycle_happy_path);
@@ -283,7 +301,8 @@ void test_list(void) {
 }
 
 void test_dict(void) {
-
+    RUN_TEST(test_dict_init);
+    RUN_TEST(test_dict_get_set);
 }
 
 void test_vector(void) {
