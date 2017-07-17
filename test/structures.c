@@ -293,6 +293,58 @@ void test_dict_get_set(void) {
     dict_free(dict);
 }
 
+void test_dict_set(void) {
+    dict_init(dict);
+    struct dict_entry one = {.key="ONE", .value=(void *) 1};
+    struct dict_entry two = {.key="TWO", .value=(void *) 2};
+    struct dict_entry three = {.key="THREE", .value=(void *) 3};
+    struct dict_entry four = {.key="FOUR", .value=(void *) 4};
+    dict_set(dict, one);
+    dict_set(dict, two);
+    dict_set(dict, three);
+    dict_set(dict, four);
+    char *key_four = dict.keys.items[3];
+    int val_four = (int) dict.values.items[3];
+    TEST_ASSERT_EQUAL_STRING("FOUR", key_four);
+    TEST_ASSERT_EQUAL_INT(4, val_four);
+    dict_free(dict);
+}
+
+int _test_dict_key_compare(char *target, char *candidate) {
+    int match = strcmp(target, candidate);
+    return match == 0 ? 1 : -1;
+}
+
+void test_create_filled_dictionary(dictionary *dict) {
+    char *test_items[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+    for (int i = 0; i < 10; ++i) {
+        struct dict_entry item = {.key=test_items[i], .value=(void *) i};
+        dict_set(*dict, item);
+    }
+}
+
+void test_dict_remove(void) {
+    dict_init(dict);
+    test_create_filled_dictionary(&dict);
+    TEST_ASSERT_EQUAL_INT(10, dict.values.size);
+    TEST_ASSERT_EQUAL_INT(10, dict.keys.size);
+    dict_remove(dict, "5");
+    TEST_ASSERT_EQUAL_INT(9, dict.values.size);
+    TEST_ASSERT_EQUAL_INT(9, dict.keys.size);
+    vector_index_of(dict.keys, "5", idx, _test_dict_key_compare, char*);
+    TEST_ASSERT_EQUAL_INT(-1, idx);
+    dict_free(dict);
+}
+
+void test_dict_foreach(void) {
+    dict_init(dict);
+    int inc(char *k, int i) { return i + 1; };
+    test_create_filled_dictionary(&dict);
+    dict_foreach(dict, int, inc);
+    TEST_ASSERT_EQUAL_INT(1, (int) dict.values.items[0]);
+    dict_free(dict);
+}
+
 void test_list(void) {
     RUN_TEST(test_linked_list_init);
     RUN_TEST(test_linked_list_lifecycle_happy_path);
@@ -303,6 +355,9 @@ void test_list(void) {
 void test_dict(void) {
     RUN_TEST(test_dict_init);
     RUN_TEST(test_dict_get_set);
+    RUN_TEST(test_dict_set);
+    RUN_TEST(test_dict_remove);
+    RUN_TEST(test_dict_foreach);
 }
 
 void test_vector(void) {

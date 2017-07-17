@@ -3,6 +3,7 @@
 //
 
 #include <string.h>
+#include <assert.h>
 #include "dict.h"
 
 void _dict_init(dictionary *dict) {
@@ -39,4 +40,12 @@ void *_dict_get(dictionary *dict, char *k) {
     if (idx == -1) return NULL;
     void *val = vector_get(dict->values, void*, idx);
     return val;
+}
+
+void _dict_remove(dictionary *dict, char *k) {
+    vector_index_of(dict->keys, k, idx, _dict_key_compare, char*);
+    assert(dict->keys.size == dict->values.size);
+    vector_delete(dict->keys, idx);
+    vector_delete(dict->values, idx);
+    assert(dict->keys.size == dict->values.size);
 }
